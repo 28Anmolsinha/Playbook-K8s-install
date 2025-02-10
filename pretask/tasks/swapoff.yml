@@ -1,0 +1,23 @@
+---
+- name: Check if swap is enabled
+  command: swapon --summary
+  register: swap_status
+  changed_when: false
+
+- name: Log swap status
+  debug:
+    msg: "Swap status: {{ swap_status.stdout }}"
+
+- name: Turn off swap
+  command: swapoff -a
+  when: swap_status.stdout != ""
+
+- name: Disable swap permanently
+  replace:
+    path: /etc/fstab
+    regexp: '^.*\sswap\s.*$'
+    replace: ''
+
+- name: Swap Action
+  debug:
+    msg: "Swap action performed successfully"

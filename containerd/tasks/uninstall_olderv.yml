@@ -1,0 +1,21 @@
+---
+
+- name: Remove old Docker versions
+  command: yum remove -y docker docker-client docker-common docker-engine
+
+- name: Older Version Uninstall
+  debug:
+    msg: "older Docker uninstalled  successfully"
+
+- name: Install Yum utilities
+  command: yum install -y yum-utils
+
+- name: Setup Docker repository
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install containerd
+  command: yum install -y containerd
+
+- name: Containerd is installed
+  debug:
+    msg: "Containerd is installed"

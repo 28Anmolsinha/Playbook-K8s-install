@@ -1,0 +1,15 @@
+---
+# tasks file for myrole
+
+- name: Include swapoff
+  ansible.builtin.include_tasks: swapoff.yml
+
+- name: Include firewall_status
+  ansible.builtin.include_tasks: firewall_status.yml
+
+- name: Include configure tasks
+  ansible.builtin.include_tasks: configure.yml
+
+- name: Include Selinux tasks
+  ansible.builtin.include_tasks: status_selinux.yml
+

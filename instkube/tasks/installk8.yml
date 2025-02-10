@@ -1,0 +1,48 @@
+---
+
+- name: Add Kubernetes repository
+  copy:
+    dest: /etc/yum.repos.d/kubernetes.repo
+    content: |
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
+
+
+- name: Kubernetes repository added
+  debug:
+    msg: "Kubernetes repo is been added  successfully"
+
+- name: Install Kubernetes components
+  yum:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+    disable_excludes: kubernetes
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start kubelet service
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started
+
+- name: Enable kubectl command completion
+  lineinfile:
+    path: ~/.bashrc
+    line: 'source <(kubectl completion bash)'
+    create: yes
+
+- name: Restart kubelet service
+  service:
+    name: kubelet
+    state: restarted
+

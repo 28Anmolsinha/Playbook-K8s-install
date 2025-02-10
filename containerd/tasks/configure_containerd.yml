@@ -1,0 +1,58 @@
+---
+
+- name: Create directory for Harbor registry certificates
+  file:
+    path: /etc/containerd/certs.d/myharbor-registry.mcarbon.com
+    state: directory
+    mode: '0755'
+
+- name: Add Harbor registry certificate in containerd
+  copy:
+    dest: /etc/containerd/certs.d/myharbor-registry.mcarbon.com/hosts.toml
+    content: |
+      server = "https://myharbor-registry.mcarbon.com"
+      [host."https://myharbor-registry.mcarbon.com:443"]
+      capabilities = ["pull", "resolve"]
+      skip_verify = true
+
+- name: Generate default containerd config
+  command: containerd config default > /etc/containerd/config.toml
+
+- name: Add configuration to config.toml
+  debug:
+    msg: "Added configuration to containerd/config.toml"
+
+
+- name: Enable SystemdCgroup in config.toml
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '^.*SystemdCgroup.*$'
+    replace: 'SystemdCgroup = true'
+
+- name: Add certificate path in config.toml
+  lineinfile:
+    path: /etc/containerd/config.toml
+    line: 'config_path = "/etc/containerd/certs.d/"'
+    insertafter: 145
+
+
+- name: Restart Containerd service
+  service:
+    name: containerd
+    state: restarted
+  register: containerd_restart
+
+- name: Containerd service restart
+  debug:
+    msg: "Containerd service restarted"
+
+- name: Log Containerd restart
+  debug:
+    msg: "Containerd restart status: {{ containerd_restart.state }}"
+
+- name: Enable Containerd service
+  systemd:
+    name: containerd
+    enabled: yes
+    state: started
+

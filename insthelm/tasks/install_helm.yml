@@ -1,0 +1,31 @@
+---
+
+- name: Download Helm
+  get_url:
+    url: https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
+    dest: /tmp/helm.tar.gz
+  register: helm_download
+
+- name: Log Helm download
+  debug:
+    msg: "Helm downloaded: {{ helm_download.dest }}"
+
+
+- name: Extract Helm
+  ansible.builtin.unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  register: helm_extract
+
+- name: Log Helm extraction
+  debug:
+    msg: "Helm extracted"
+
+- name: Move to data
+  command: mv /tmp/linux-amd64/helm /data/helm
+
+- name: Log Helm move
+  debug:
+    msg: "Helm moved to /data/helm"
+

@@ -1,0 +1,34 @@
+---
+
+- name: Initialize Kubernetes cluster
+  shell: |
+    kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=10.200.208.98 --cri-socket=unix:///var/run/containerd/containerd.sock --ignore-preflight-errors all
+  args:
+    creates: /etc/kubernetes/admin.conf
+  register: kube_init
+
+- name: Log Kubernetes initialization
+  debug:
+    msg: "Kubernetes cluster initialized: {{ kube_init.stdout }}"
+
+- name: Create .kube directory for user
+  file:
+    path: "{{ ansible_env.HOME }}/.kube"
+    state: directory
+    mode: '0755'
+
+- name: Copy admin.conf to user kubeconfig
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ ansible_env.HOME }}/.kube/config"
+    remote_src: yes
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+
+- name: Set KUBECONFIG environment variable (for root users)
+  lineinfile:
+    path: /etc/environment
+    line: 'KUBECONFIG=/etc/kubernetes/admin.conf'
+    create: yes

@@ -1,0 +1,40 @@
+---
+
+- name: Download Calico manifest
+  get_url:
+    url: https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
+    dest: /tmp/calico.yaml
+    mode: '0644'
+
+- name: Apply Calico network plugin
+  command: kubectl apply -f /tmp/calico.yaml
+  register: calico_apply
+
+
+- name: Log Calico application
+  debug:
+    msg: "Calico network plugin applied: {{ calico_apply.stdout }}"
+
+- name: Get node labels
+  command: kubectl get node --show-labels
+  register: node_labels
+
+- name: Remove master node taint
+  command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+  ignore_errors: yes
+
+- name: Taint Mode diasbled
+  debug:
+    msg: "Tiant mode is disabled successfully"
+
+
+- name: Verify Kubernetes pods status
+  command: kubectl get pods -n kube-system
+  register: kube_pods
+
+
+
+- name: Log Kubernetes pod status
+  debug:
+    msg: "Kubernetes pods: {{ kube_pods.stdout }}"
+

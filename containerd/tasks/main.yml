@@ -1,0 +1,10 @@
+---
+# tasks file for containerd
+
+- name: Uninstall older version
+  ansible.builtin.include_tasks: uninstall_olderv.yml
+
+- name: Configure containerd
+  ansible.builtin.include_tasks: configure_containerd.yml 
+
+

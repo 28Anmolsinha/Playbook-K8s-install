@@ -1,0 +1,29 @@
+---
+- name: Check if SELinux is enabled
+  stat:
+    path: /sys/fs/selinux
+  register: selinux_status
+
+- name: Get current SELinux mode
+  command: getenforce
+  register: selinux_mode
+  when: selinux_status.stat.exists
+  changed_when: false
+  ignore_errors: yes
+
+- name: Set SELinux to permissive mode
+  command: setenforce 0
+  when:
+    - selinux_status.stat.exists
+    - selinux_mode.stdout is defined
+    - selinux_mode.stdout == "Enforcing"
+
+- name: Update SELinux configuration
+  replace:
+    path: /etc/selinux/config
+    regexp: '^SELINUX=enforcing'
+    replace: 'SELINUX=permissive'
+
+- name: SE LINUX PERMISSIVE
+  debug:
+    msg: "SE LINUX PERMISSIVE done successfully"

@@ -1,0 +1,11 @@
+---
+# tasks file for kubernetes
+
+- name: Install Kubernetes
+  ansible.builtin.include_tasks: installk8.yml
+
+- name: Initialize cluster
+  ansible.builtin.include_tasks: init_cluster.yml
+
+- name: Download calico
+  ansible.builtin.include_tasks: download_calico.yml

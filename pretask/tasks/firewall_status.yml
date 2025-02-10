@@ -1,0 +1,21 @@
+---
+- name: Check firewall status
+  command: systemctl is-active firewalld
+  register: firewall_status
+  changed_when: false
+  ignore_errors: yes
+
+- name: Log firewall status
+  debug:
+    msg: "Firewall status: {{ firewall_status.stdout }}"
+
+- name: Disable Firewall
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+  when: firewall_status.stdout == "active"
+
+- name: Firewall Action
+  debug:
+    msg: "Firewall action performed successfully"

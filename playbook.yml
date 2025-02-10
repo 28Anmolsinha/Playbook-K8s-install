@@ -1,0 +1,15 @@
+---
+
+- name: Install Kubernetes
+  hosts: mycomp
+  become: yes
+
+
+  roles:
+    - pretask
+    - containerd
+    - instkube
+    - insthelm
+
+
+
