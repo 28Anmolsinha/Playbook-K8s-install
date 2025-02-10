@@ -4,6 +4,7 @@
   register: swap_status
   changed_when: false
 
+
 - name: Log swap status
   debug:
     msg: "Swap status: {{ swap_status.stdout }}"
@@ -11,6 +12,7 @@
 - name: Turn off swap
   command: swapoff -a
   when: swap_status.stdout != ""
+
 
 - name: Disable swap permanently
   replace:

@@ -1,15 +1,25 @@
----
 
+---
 - name: Install Kubernetes
   hosts: mycomp
   become: yes
 
-
   roles:
-    - pretask
-    - containerd
-    - instkube
-    - insthelm
+    - role: pretask
+      tags:
+        - pretask
+  
 
+    - role: containerd
+      tags:
+        - containerd
+
+    - role: instkube
+      tags:
+        - kubeadm
+
+    - role: insthelm
+      tags:
+        - helm
 
 
