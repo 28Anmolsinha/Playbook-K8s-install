@@ -1,12 +1,13 @@
-# Kubernetes Installation Using Ansible Playbook  
+#Kubernetes Installation Using Ansible Playbook  
 
 This guide outlines the steps to install Kubernetes using an Ansible playbook. Before proceeding, ensure that all pre-existing Kubernetes configurations and dependencies are removed for a smooth setup.  
 
 Before running the playbook, ensure the target system does not have any pre-installed Kubernetes or related  packages.  
 
-## Checking for an Existing Kubernetes Cluster  
+#Checking for an Existing Kubernetes Cluster  
 
 To verify if a Kubernetes cluster is installed, run:  
+
 kubectl cluster-info  
 
 ### Possible Outputs:  
