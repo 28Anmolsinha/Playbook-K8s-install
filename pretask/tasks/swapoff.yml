@@ -12,7 +12,7 @@
 - name: Turn off swap
   command: swapoff -a
   when: swap_status.stdout != ""
-
+  tags: swap
 
 - name: Disable swap permanently
   replace:
