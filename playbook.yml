@@ -12,14 +12,14 @@
 
     - role: containerd
       tags:
-        - containerd
+        - installcontainerd
 
     - role: instkube
       tags:
-        - kubeadm
+        - installkubernetes
 
     - role: insthelm
       tags:
-        - helm
+        - installhelm
 
 
